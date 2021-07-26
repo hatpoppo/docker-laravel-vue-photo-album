@@ -19,4 +19,5 @@ mix.browserSync({
     // .postCss('resources/css/app.css', 'public/css', [
     //     //
     // ])
+    .vue()
     .version()
