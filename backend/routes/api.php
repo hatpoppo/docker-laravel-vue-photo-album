@@ -1,9 +1,8 @@
 <?php
-namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,10 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 // 会員登録
-Route::post('/register', [Auth\RegisterController::class, 'register'])->name('register');
-Route::post('/login', [Auth\LoginController::class, 'login'])->name('login');
-Route::post('/logout', [Auth\LoginController::class, 'logout'])->name('logout');
+Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register');
+Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login');
+Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
+// ログインユーザー
+Route::get('/user', fn() => Auth::user())->name('user');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
