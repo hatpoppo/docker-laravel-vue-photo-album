@@ -2026,12 +2026,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -2075,6 +2082,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -2091,11 +2107,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     };
   },
-  computed: {
-    apiStatus: function apiStatus() {
-      return this.$store.state.auth.apiStatus;
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_1__.mapState)({
+    apiStatus: function apiStatus(state) {
+      return state.auth.apiStatus;
+    },
+    loginErrors: function loginErrors(state) {
+      return state.auth.loginErrorMessages;
     }
-  },
+  })),
   methods: {
     login: function login() {
       var _this = this;
@@ -2144,7 +2163,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee2);
       }))();
+    },
+    clearError: function clearError() {
+      this.$store.commit('auth/setLoginErrorMessages', null);
     }
+  },
+  created: function created() {
+    this.clearError();
   }
 });
 
@@ -2282,7 +2307,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 var state = {
   user: null,
-  apiStatus: null
+  apiStatus: null,
+  loginErrorMessages: null
 };
 var getters = {
   check: function check(state) {
@@ -2298,6 +2324,9 @@ var mutations = {
   },
   setApiStatus: function setApiStatus(state, status) {
     state.apiStatus = status;
+  },
+  setLoginErrorMessages: function setLoginErrorMessages(state, messages) {
+    state.loginErrorMessages = messages;
   }
 };
 var actions = {
@@ -2350,9 +2379,14 @@ var actions = {
 
             case 8:
               context.commit('setApiStatus', false);
-              context.commit('error/setCode', response.status, {
-                root: true
-              });
+
+              if (response.status === _util__WEBPACK_IMPORTED_MODULE_1__.UNPROCESSABLE_ENTITY) {
+                context.commit('setLoginErrorMessages', response.data.errors);
+              } else {
+                context.commit('error/setCode', response.status, {
+                  root: true
+                });
+              }
 
             case 10:
             case "end":
@@ -2487,6 +2521,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "OK": () => (/* binding */ OK),
 /* harmony export */   "CREATED": () => (/* binding */ CREATED),
 /* harmony export */   "INTERNAL_SERVER_ERROR": () => (/* binding */ INTERNAL_SERVER_ERROR),
+/* harmony export */   "UNPROCESSABLE_ENTITY": () => (/* binding */ UNPROCESSABLE_ENTITY),
 /* harmony export */   "getCookieValue": () => (/* binding */ getCookieValue)
 /* harmony export */ });
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -2504,6 +2539,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var OK = 200;
 var CREATED = 201;
 var INTERNAL_SERVER_ERROR = 500;
+var UNPROCESSABLE_ENTITY = 422;
 /**
  * クッキーの値を取得する
  * @param {String} searchKey 検索するキー
@@ -39283,6 +39319,30 @@ var render = function() {
             }
           },
           [
+            _vm.loginErrors
+              ? _c("div", { staticClass: "errors" }, [
+                  _vm.loginErrors.email
+                    ? _c(
+                        "ul",
+                        _vm._l(_vm.loginErrors.email, function(msg) {
+                          return _c("li", { key: msg }, [_vm._v(_vm._s(msg))])
+                        }),
+                        0
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.loginErrors.password
+                    ? _c(
+                        "ul",
+                        _vm._l(_vm.loginErrors.password, function(msg) {
+                          return _c("li", { key: msg }, [_vm._v(_vm._s(msg))])
+                        }),
+                        0
+                      )
+                    : _vm._e()
+                ])
+              : _vm._e(),
+            _vm._v(" "),
             _c("label", { attrs: { for: "login-email" } }, [_vm._v("Email")]),
             _vm._v(" "),
             _c("input", {
