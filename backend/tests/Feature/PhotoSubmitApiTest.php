@@ -26,7 +26,7 @@ class PhotoSubmitApiTest extends TestCase
      */
     public function sould_can_upload()
     {
-        Storage::fake('local');
+        Storage::fake('public');
         $response=$this->actingAs($this->user)
         ->json('POST', route('photo.create'), [
             'photo' => UploadedFile::fake()->image('photo.jpg')
@@ -36,7 +36,7 @@ class PhotoSubmitApiTest extends TestCase
         $photo = Photo::first();
         $this->assertMatchesRegularExpression('/^[0-9a-zA-Z-_]{12}$/', $photo->id);
 
-        Storage::disk('local')->exists($photo->filename);
+        Storage::disk('public')->exists($photo->filename);
     }
     /**
      * @test
@@ -44,13 +44,13 @@ class PhotoSubmitApiTest extends TestCase
     public function should_not_save_with_database_error()
     {
         Schema::drop('photos');
-        Storage::fake('local');
+        Storage::fake('public');
         $response = $this->actingAs($this->user)
         ->json('POST', route('photo.create'), [
             'photo'=>UploadedFile::fake()->image('photo.jpg'),
         ]);
         $response->assertStatus(500);
-        $this->assertEquals(0, count(Storage::disk('local')->files()));
+        $this->assertEquals(0, count(Storage::disk('public')->files()));
     }
     /**
      * @test

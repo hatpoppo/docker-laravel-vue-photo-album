@@ -14,7 +14,7 @@ class PhotoController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['index']);
+        $this->middleware('auth')->except(['index','download']);
     }
 
     /**
@@ -29,16 +29,15 @@ class PhotoController extends Controller
 
         $photo->filename = $photo->id . '.' . $extension;
 
-        Storage::disk('local')
-        ->put($photo->filename, $request->photo);
-
+        Storage::disk('public')
+        ->putFileAs('', $request->photo, $photo->filename);
         DB::beginTransaction();
         try {
             Auth::user()->photos()->save($photo);
             DB::commit();
         } catch (\Exception $exception) {
             DB::rollback();
-            Storage::disk('local')->delete($photo->filename);
+            Storage::disk('public')->delete($photo->filename);
             throw $exception;
         }
         return response($photo, 201);
@@ -52,5 +51,24 @@ class PhotoController extends Controller
             ->orderBy(Photo::CREATED_AT, 'desc')->paginate();
         
         return $photos;
+    }
+    /**
+     * 写真ダウンロード
+     * @param Photo $photo
+     * @retun Illuminate\Httep\Response
+     */
+    public function download(Photo $photo)
+    {
+        if (!Storage::disk('public')->exists($photo->filename)) {
+            abort(404);
+        }
+
+        $disposition = 'attachment; filename="' . $photo->filename . '"';
+        $header = [
+            'Content-Type'=>'application/octet-stream',
+            'Content-Disposition'=>$disposition,
+        ];
+        
+        return response(Storage::disk('public')->get($photo->filename), 200, $header);
     }
 }
