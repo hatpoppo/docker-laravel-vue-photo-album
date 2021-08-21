@@ -14,7 +14,7 @@ class PhotoController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['index']);
     }
 
     /**
@@ -42,5 +42,15 @@ class PhotoController extends Controller
             throw $exception;
         }
         return response($photo, 201);
+    }
+    /**
+     * 写真一覧
+     */
+    public function index()
+    {
+        $photos = Photo::with(['owner'])
+            ->orderBy(Photo::CREATED_AT, 'desc')->paginate();
+        
+        return $photos;
     }
 }

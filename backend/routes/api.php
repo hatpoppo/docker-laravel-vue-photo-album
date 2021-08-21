@@ -20,5 +20,7 @@ Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login'
 Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logout'])->name('logout');
 //写真投稿
 Route::post('/photos', [App\Http\Controllers\PhotoController::class, 'create'])->name('photo.create');
+//写真一覧
+Route::get('/photos', [App\Http\Controllers\PhotoController::class, 'index'])->name('photo.index');
 // ログインユーザー
 Route::get('/user', fn () => Auth::user())->name('user');
