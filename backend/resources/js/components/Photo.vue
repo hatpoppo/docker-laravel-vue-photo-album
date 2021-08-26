@@ -7,7 +7,7 @@
         :alt="`Photo by ${item.owner.name}`"
       />
     </figure>
-    <RouteLink
+    <RouterLink
       class="photo__overlay"
       :to="`/photos/${item.id}`"
       :title="`View the photo by ${item.owner.name}`"
@@ -26,7 +26,7 @@
         </a>
       </div>
       <div class="photo__username">{{ item.owner.name }}</div>
-    </RouteLink>
+    </RouterLink>
   </div>
 </template>
 <script>

@@ -22,5 +22,7 @@ Route::post('/logout', [App\Http\Controllers\Auth\LoginController::class, 'logou
 Route::post('/photos', [App\Http\Controllers\PhotoController::class, 'create'])->name('photo.create');
 //写真一覧
 Route::get('/photos', [App\Http\Controllers\PhotoController::class, 'index'])->name('photo.index');
+//写真詳細
+Route::get('/photos/{id}', [App\Http\Controllers\PhotoController::class, 'show'])->name('photo.show');
 // ログインユーザー
 Route::get('/user', fn () => Auth::user())->name('user');
