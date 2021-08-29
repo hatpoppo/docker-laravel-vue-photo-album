@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreComment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -9,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StorePhoto;
 use App\Models\Photo;
 use App\Models\User;
+use App\Models\Comment;
 
 class PhotoController extends Controller
 {
@@ -78,8 +80,24 @@ class PhotoController extends Controller
      */
     public function show(string $id)
     {
-        $photo=Photo::where('id', $id)->with(['owner'])->first();
-        // dd($photo);
+        $photo=Photo::where('id', $id)->with(['owner','comments.author'])->first();
         return $photo ?? abort(404);
+    }
+    /**
+     * コメント投稿
+     * @param Photo $photo
+     * @param StoreComment $request
+     * @return \Illumitate\Http\Response
+     */
+    public function addComment(Photo $photo, StoreComment $request)
+    {
+        $comment = new Comment();
+        $comment->content = $request->get('content');
+        $comment->user_id = Auth::user()->id;
+        $photo->comments()->save($comment);
+
+        $new_comment = Comment::where('id', $comment->id)->with('author')->first();
+        // dd($new_comment);
+        return response($new_comment, 201);
     }
 }

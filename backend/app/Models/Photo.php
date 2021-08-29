@@ -54,6 +54,14 @@ class Photo extends Model
         return $this->belongsTo('App\Models\User', 'user_id', 'id', 'users');
     }
     /**
+     * リレーションシップ　－　commnetsテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany('App\Models\Comment')->orderBy('id', 'desc');
+    }
+    /**
      * アクセサ - url
      * @return string
      */
@@ -66,7 +74,7 @@ class Photo extends Model
         'url'
     ];
     protected $visible = [
-        'id','owner','url'
+        'id','owner','url','comments'
     ];
     protected $perPage=5;
 }
