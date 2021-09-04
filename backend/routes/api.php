@@ -26,5 +26,9 @@ Route::get('/photos', [App\Http\Controllers\PhotoController::class, 'index'])->n
 Route::get('/photos/{id}', [App\Http\Controllers\PhotoController::class, 'show'])->name('photo.show');
 //コメント
 Route::post('/photos/{photo}/comments', [App\Http\Controllers\PhotoController::class, 'addComment'])->name('photo.comment');
+//いいね
+Route::put('/photos/{id}/like', [App\Http\Controllers\PhotoController::class, 'like'])->name('photo.like');
+//いいね解除
+Route::delete('/photos/{id}/like', [App\Http\Controllers\PhotoController::class, 'unlike']);
 // ログインユーザー
 Route::get('/user', fn () => Auth::user())->name('user');
