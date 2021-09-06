@@ -30,5 +30,10 @@ Route::post('/photos/{photo}/comments', [App\Http\Controllers\PhotoController::c
 Route::put('/photos/{id}/like', [App\Http\Controllers\PhotoController::class, 'like'])->name('photo.like');
 //いいね解除
 Route::delete('/photos/{id}/like', [App\Http\Controllers\PhotoController::class, 'unlike']);
+//トークンリフレッシュ
+Route::get('/reflesh-token', function (Request $request) {
+    $request->session()->regenerateToken();
+    return response()->json();
+});
 // ログインユーザー
 Route::get('/user', fn () => Auth::user())->name('user');
